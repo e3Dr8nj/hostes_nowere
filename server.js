@@ -16,9 +16,9 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const fs = require("fs");
 const config = {};
-//config.prefix="+";
+config.prefix="?";
 client.lang=1;
-client.prefix="???";
+client.prefix="?";
 
 
 

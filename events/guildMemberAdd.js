@@ -1,12 +1,12 @@
 exports.phrases={
- enter_phrase: 'Для доступа ко все каналам нажмите на реакцию соответствующую тому что изображено на картинке \n Успейте нажать втечение 10 минут',
+ enter_phrase: 'Каналы сервера скрыты.\nДля доступа пройдите тест на бота в течение 15 минут нажав на реакцию похожую на картинку ниже.',
  wrong_phrase:' Выбрана неверная реакция.',
  timeout_phrase:' Время ожидания реакции истекло.',
  waitingForRole_phrase:' Через 5 минут доступ будет открыт.\nА пока почитайте правила сервера <#301319871981944834>',
  tryAgain_phrase:' Попробуй пройти тест еще раз',
  ifFail_phrase:' Перезайди или напиши что-нибудь в этот канал',
  fail_phrase:[
-            ' По твоему на картинке изображен #wrong_answer ?.. <:p_:402137819314651137>',
+            ' По твоему на картинке изображен #wrong_answer ?.. <:37:402137752746983445> ',
              ' Ты нормальный? #wrong_answer с #right_answer спутал'  
               ],
   ifFail_phrase:' Перезайди на сервер (инвайт отправлен в лс)',
@@ -15,7 +15,7 @@ exports.phrases={
 };
 exports.delay={
  waitingForRole_minutes:5,
- waitingReactions_minutes:10
+ waitingReactions_minutes:15
 };
 
 exports.secret_arr=[
@@ -176,13 +176,31 @@ try{
    resolve = await checkBot();
    if(resolve){
      await delay(2*1000);
-     await giveRole();
+     return giveRole();
+     
    };
+    //___
+   
+    //___
     if(!resolve){
+      //__
+      await delay(2*1000);
+    await channel.send(member+module.exports.phrases.tryAgain_phrase);
+    await delay(2*1000);
+   resolve = await checkBot();
+   if(resolve){
+     await delay(2*1000);
+     return giveRole();
+     
+   };
+      if(!resolve){channel.send(member+" Чтобы пройти еще раз, отправьте сообщение - ?тест")};
+      //__
+      /*
       await delay(2*1000);
       await channel.send(member+module.exports.phrases.ifFail_phrase);
        let mmb = member.guild.members.get(member.user.id);
        if(mmb){mmb.user.send(module.exports.phrases.dm_msg)};
+       */
      // await delay(2*1000);
      // await channel.send(member+module.exports.phrases.ifFail_phrase);
     };
