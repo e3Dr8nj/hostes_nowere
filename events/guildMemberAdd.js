@@ -1,3 +1,4 @@
+let delay=async(duration)=>{await new Promise(resolve=>setTimeout(resolve,duration))}; 
 exports.phrases={
  enter_phrase: 'Каналы сервера скрыты.\nДля доступа пройдите тест на бота в течение 15 минут нажав на реакцию похожую на картинку ниже.',
  wrong_phrase:' Выбрана неверная реакция.',
@@ -6,7 +7,7 @@ exports.phrases={
  tryAgain_phrase:' Попробуй пройти тест еще раз',
  ifFail_phrase:' Перезайди или напиши что-нибудь в этот канал',
  fail_phrase:[
-            ' По твоему на картинке изображен #wrong_answer ?.. <:37:402137752746983445> ',
+            ' По твоему на картинке изображен #wrong_answer ?.. <:50:589907463734689795> ',
              ' Ты нормальный? #wrong_answer с #right_answer спутал'  
               ],
   ifFail_phrase:' Перезайди на сервер (инвайт отправлен в лс)',
@@ -44,14 +45,24 @@ exports.secret_arr=[
 exports.system={
   ROLE_TIME_NAME:'Временная роль',
   ROLE_NAME:'Кто все эти люди',
+  ROLE_SPAMER_NAME:"Мертвые души",
  GUEST_CHANNEL_ID:'488840569674530816',
+  BOT_CHANNEL_ID:'592803857369923595',
  SERVER_ID:'301063859702071316'
 };//
 
 exports.run = async(client, member) => {
 try{
           if(member.guild.id!=module.exports.system.SERVER_ID) return;
-
+//-------
+        
+let channel=client.channels.get(module.exports.system.GUEST_CHANNEL_ID);
+let spamer = await module.exports.isSpamer(client,member);
+if(spamer) {
+  console.log('spamer');
+  
+  return;
+};
 //-----check if member has roles 
         let delay=(duration)=>new Promise( resolve => setTimeout(resolve,duration) );
         await delay(5*1000); 
@@ -154,6 +165,9 @@ try{
     if(roleTime) await member.removeRole(roleTime);
     let roleA=channel.guild.roles.find(r=>r.name==module.exports.system.ROLE_NAME);
     if(roleA) await member.addRole(roleA);
+    
+let roleSpamer=await member.guild.roles.find(r=>r.name==module.exports.system.ROLE_SPAMER_NAME);
+   if(roleSpamer&& (member.roles.find(r=>r.name==module.exports.system.ROLE_SPAMER_NAME)) ) { await member.removeRole(roleSpamer);};
     return 1;
 };//end giveRole 
  let resolve = await checkBot();
@@ -210,4 +224,20 @@ return;
 }catch(err){console.log(err);};
 };//run end
 
-
+//______________________
+exports.isSpamer=async(client,member)=>{try{
+var str =member.user.username;
+  var patt1 = /\w+\d{2,4}\b/g; 
+  var result = patt1.test(str);
+  if(!result) return false;
+  await delay(1000);
+  if (member.roles.find(r=>r.name==module.exports.system.ROLE_SPAMER_NAME)) return false;
+  let roleTime=await member.guild.roles.find(r=>r.name==module.exports.system.ROLE_TIME_NAME);
+   if(roleTime) await member.removeRole(roleTime);
+let roleSpamer=await member.guild.roles.find(r=>r.name==module.exports.system.ROLE_SPAMER_NAME);
+   if(roleSpamer) await member.addRole(roleSpamer);
+  
+let channel=client.channels.get(module.exports.system.BOT_CHANNEL_ID);
+if(channel) channel.send(member+" "+member.user.username+" если ты не бот напиши `?тест` ");
+  return result;
+}catch(err){console.log(err)};};
