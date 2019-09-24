@@ -57,12 +57,14 @@ try{
 //-------
         
 let channel=client.channels.get(module.exports.system.GUEST_CHANNEL_ID);
-let spamer = await module.exports.isSpamer(client,member);
+  /*
+let spamer = await module.exports.isSpamer(client,member,false);
 if(spamer) {
   console.log('spamer');
   
   return;
 };
+*/
 //-----check if member has roles 
         let delay=(duration)=>new Promise( resolve => setTimeout(resolve,duration) );
         await delay(5*1000); 
@@ -207,7 +209,8 @@ let roleSpamer=await member.guild.roles.find(r=>r.name==module.exports.system.RO
      return giveRole();
      
    };
-      if(!resolve){channel.send(member+" Чтобы пройти еще раз, отправьте сообщение - ?тест")};
+     // if(!resolve){channel.send(member+" Чтобы пройти еще раз, отправьте сообщение - ?тест")};//prev1
+      if(!resolve){return  module.exports.isSpamer(client,member,true);};//features1
       //__
       /*
       await delay(2*1000);
@@ -225,19 +228,24 @@ return;
 };//run end
 
 //______________________
-exports.isSpamer=async(client,member)=>{try{
+exports.isSpamer=async(client,member,defined)=>{try{
+  /*
 var str =member.user.username;
   var patt1 = /\w+\d{2,4}\b/g; 
   var result = patt1.test(str);
-  if(!result) return false;
+  if(!result&&!defined) return false;
+  */
   await delay(1000);
-  if (member.roles.find(r=>r.name==module.exports.system.ROLE_SPAMER_NAME)) return false;
+ // if (member.roles.find(r=>r.name==module.exports.system.ROLE_SPAMER_NAME)) return false;
   let roleTime=await member.guild.roles.find(r=>r.name==module.exports.system.ROLE_TIME_NAME);
+   if(!roleTime) return;
    if(roleTime) await member.removeRole(roleTime);
+  
 let roleSpamer=await member.guild.roles.find(r=>r.name==module.exports.system.ROLE_SPAMER_NAME);
    if(roleSpamer) await member.addRole(roleSpamer);
   
 let channel=client.channels.get(module.exports.system.BOT_CHANNEL_ID);
 if(channel) channel.send(member+" "+member.user.username+" если ты не бот напиши `?тест` ");
-  return result;
+  return;
+ // return result;
 }catch(err){console.log(err)};};
