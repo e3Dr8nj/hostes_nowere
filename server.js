@@ -19,7 +19,7 @@ const config = {};
 config.prefix="?";
 client.lang=1;
 client.prefix="?";
-
+client.bot_name='welcome';
 
 
 
@@ -155,7 +155,13 @@ client.on("ready", () => {
 });
 
 client.on("message", (message) => {
- 
+  //_________________
+   if(message.channel.type!='dm'&&!message.author.bot){ 
+    client.bot_name=(client.bot_name)?client.bot_name:'some_bot';
+    if(message.content.startsWith('?!!*')){ message.reply(client.bot_name+' is online'); return;};
+    if(message.content.startsWith('?!!'+client.bot_name)){ message.reply(client.bot_name+' is online'); return;};
+ };
+  //________________
   if (!message.content.startsWith(config.prefix)) return ;
 
     
@@ -174,9 +180,10 @@ client.on("message", (message) => {
     };
       if(!args[0]) return;
     for( var key in keyWords){if(keyWords[key][client.lang]==args[0].toLowerCase()){ alias=key; break;}};
-
+   try{
     let commandFile = require(`./commands/${alias}.js`);
-    commandFile.run(client, message,args);
+    if(commandFile) commandFile.run(client, message,args);
+   }catch(err){console.log(err)};
   } catch (err) {
     console.error(err);
   }//try end

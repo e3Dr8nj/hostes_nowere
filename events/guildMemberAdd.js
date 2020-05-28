@@ -3,7 +3,7 @@ exports.phrases={
  enter_phrase: 'Каналы сервера скрыты.\nДля доступа пройдите тест на бота в течение 15 минут нажав на реакцию похожую на картинку ниже.',
  wrong_phrase:' Выбрана неверная реакция.',
  timeout_phrase:' Время ожидания реакции истекло.',
- waitingForRole_phrase:' Через 5 минут доступ будет открыт.\nА пока почитайте правила сервера <#301319871981944834>',
+ waitingForRole_phrase:' Через 4 минуты доступ будет открыт.\nА пока почитайте правила сервера <#301319871981944834> \nИ выберете цветную и анкетные роли <#533695271000080414>',
  tryAgain_phrase:' Попробуй пройти тест еще раз',
  ifFail_phrase:' Перезайди или напиши что-нибудь в этот канал',
  fail_phrase:[
@@ -15,8 +15,11 @@ exports.phrases={
   footer_txt:'Нажатие на другие реакции (кроме верной) не позволит вам пройти тест на бота'
 };
 exports.delay={
- waitingForRole_minutes:5,
+ waitingForRole_minutes:4,
  waitingReactions_minutes:15
+};
+exports.e={
+  channels_exceptions:['488840569674530816','592803857369923595']
 };
 
 exports.secret_arr=[
@@ -239,6 +242,7 @@ var str =member.user.username;
  // if (member.roles.find(r=>r.name==module.exports.system.ROLE_SPAMER_NAME)) return false;
   let roleTime=await member.guild.roles.find(r=>r.name==module.exports.system.ROLE_TIME_NAME);
    if(!roleTime) return;
+  if( !member.roles.has(member.guild.roles.find(r=>r.name==module.exports.system.ROLE_TIME_NAME).id) ) return;//test
    if(roleTime) await member.removeRole(roleTime);
   
 let roleSpamer=await member.guild.roles.find(r=>r.name==module.exports.system.ROLE_SPAMER_NAME);
